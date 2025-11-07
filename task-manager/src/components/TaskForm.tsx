@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 interface TaskFormProps {
-  onAddTask: (title: string, description: string) => void;
+  onAddTask: (title: string, description: string) => void
 }
 
 const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
-    onAddTask(title, description);
-    setTitle('');
-    setDescription('');
-  };
+    e.preventDefault()
+    if (!title.trim()) return
+    onAddTask(title, description)
+    setTitle('')
+    setDescription('')
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ marginBottom: 20 }}>
@@ -23,6 +23,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
         placeholder="Task Title"
         value={title}
         onChange={e => setTitle(e.target.value)}
+        style={{ marginRight: 10 }}
         required
       />
       <input
@@ -30,10 +31,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask }) => {
         placeholder="Task Description"
         value={description}
         onChange={e => setDescription(e.target.value)}
+        style={{ marginRight: 10 }}
       />
       <button type="submit">Add Task</button>
     </form>
-  );
-};
+  )
+}
 
-export default TaskForm;
+export default TaskForm
