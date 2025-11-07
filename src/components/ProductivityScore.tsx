@@ -24,7 +24,7 @@ const ProductivityScore: React.FC<ProductivityScoreProps> = ({ completedCount })
       })
       .then(data => {
         setScoreData(data)
-    })
+      })
       .catch(err => setError(err.message))
   }, [])
 
@@ -59,19 +59,21 @@ const ProductivityScore: React.FC<ProductivityScoreProps> = ({ completedCount })
         return res.json()
       })
       .then(updatedScore => {
-      setScoreData(prev => (prev ? { ...prev, ...updatedScore } : updatedScore))
-    })
+        setScoreData(prev => (prev ? { ...prev, ...updatedScore } : updatedScore))
+      })
       .catch(err => setError(err.message))
   }
 
-  if (error) return <div>Error: {error}</div>
-  if (!scoreData) return <div>Loading productivity score...</div>
+  if (error) return <div className="productivity-card">Error: {error}</div>
+  if (!scoreData) return <div className="productivity-card">Loading productivity score…</div>
 
   return (
-    <div>
-        Productivity Score: {scoreData.score}
+    <div className="productivity-card">
+      <div className="productivity-card__score" aria-live="polite">
+        {scoreData.score}
+      </div>
     </div>
-)
+  )
 }
 
 export default ProductivityScore

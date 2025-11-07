@@ -8,7 +8,7 @@ import ProductivityScore from './components/ProductivityScore'
 const API_URL = 'http://localhost:3001/tasks'
 
 function App() {
-const [tasks, setTasks] = useState<Task[]>([])
+  const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,7 +20,6 @@ const [tasks, setTasks] = useState<Task[]>([])
         return res?.json()
       })
       ?.then(data => {
-        // console.log('Fetched tasks:', data)
         setTasks(data)
         setLoading(false)
       })
@@ -76,27 +75,70 @@ const [tasks, setTasks] = useState<Task[]>([])
   }
 
   const completedCount = tasks.filter(t => t.completed).length
-  // console.log('Completed tasks count:', completedCount)
+  const totalTasks = tasks.length
+  const pendingCount = totalTasks - completedCount
 
-  if (loading) return <div>Loading tasks...</div>
-  if (error) {
+  if (loading) {
     return (
-      <div>
-        <strong>Error:</strong> Could not connect to API.
-        <p>Please ensure JSON Server is running.</p>
+      <div className="app-shell">
+        <div className="app-loading">Loading tasks…</div>
       </div>
     )
   }
 
+  if (error) {
+    return (
+      <div className="app-shell">
+        <div className="app-error">
+          <strong>We hit a snag.</strong>
+          <p>Could not connect to the task service. Make sure JSON Server is running.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', height: '100vh', width: '100vw', top: 0, left: 0, position: 'absolute'}}>
-      <div style={{ maxWidth: 600, padding: 20}}>
-        <h1>Task Manager</h1>
-        <TaskForm onAddTask={addTask} />
-        <TaskList tasks={tasks} onToggleComplete={toggleComplete} onDelete={deleteTask} />
-        <ProductivityScore completedCount={completedCount} />
-      </div>
+    <div className="app-shell">
+      <main className="app-container">
+        <header className="app-header">
+          <div>
+            <h1>Task Manager</h1>
+          </div>
+          <div className="app-stats" aria-label="Task breakdown">
+            <div className="stat-card">
+              <span className="stat-label">Total</span>
+              <span className="stat-value">{totalTasks}</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Completed</span>
+              <span className="stat-value">{completedCount}</span>
+            </div>
+            <div className="stat-card">
+              <span className="stat-label">Pending</span>
+              <span className="stat-value">{pendingCount}</span>
+            </div>
+          </div>
+        </header>
+
+        <section className="panel">
+          <h2 className="panel-title">Add a task</h2>
+          <TaskForm onAddTask={addTask} />
+        </section>
+
+        <section className="panel">
+          <h2 className="panel-title">Your tasks</h2>
+          <TaskList
+            tasks={tasks}
+            onToggleComplete={toggleComplete}
+            onDelete={deleteTask}
+          />
+        </section>
+
+        <section className="panel">
+          <h2 className="panel-title">Productivity Score</h2>
+          <ProductivityScore completedCount={completedCount} />
+        </section>
+      </main>
     </div>
   )
 }
