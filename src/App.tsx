@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import type { Task } from './types'
 import TaskList from './components/TaskList'
 import TaskForm from './components/TaskForm'
-import { v4 as uuidv4 } from 'uuid'
 import ProductivityScore from './components/ProductivityScore'
 
 const API_URL = 'http://localhost:3001/tasks'
-const PRODUCTIVITY_API_URL = 'http://localhost:3001/productivityScore/1'
 
 function App() {
 const [tasks, setTasks] = useState<Task[]>([])
@@ -17,16 +15,16 @@ const [tasks, setTasks] = useState<Task[]>([])
   // Fetch tasks on mount
   useEffect(() => {
     fetch(API_URL)
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch tasks')
-        return res.json()
+      ?.then(res => {
+        if (!res?.ok) throw new Error('Failed to fetch tasks')
+        return res?.json()
       })
-      .then(data => {
+      ?.then(data => {
         // console.log('Fetched tasks:', data)
         setTasks(data)
         setLoading(false)
       })
-      .catch(err => {
+      ?.catch(err => {
         setError(err.message)
         setLoading(false)
       })
@@ -78,10 +76,18 @@ const [tasks, setTasks] = useState<Task[]>([])
   }
 
   const completedCount = tasks.filter(t => t.completed).length
-  console.log('Completed tasks count:', completedCount)
+  // console.log('Completed tasks count:', completedCount)
 
   if (loading) return <div>Loading tasks...</div>
-  if (error) return <div>Error: {error}</div>
+  if (error) {
+    return (
+      <div>
+        <strong>Error:</strong> Could not connect to API.
+        <p>Please ensure JSON Server is running.</p>
+      </div>
+    )
+  }
+
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', height: '100vh', width: '100vw', top: 0, left: 0, position: 'absolute'}}>
